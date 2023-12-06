@@ -125,6 +125,11 @@ if (isset($_POST['saveData'])) {
     $realName = trim(strip_tags($_POST['realName']));
     $passwd1 = trim($_POST['passwd1']);
     $passwd2 = trim($_POST['passwd2']);
+
+    $uppercase = preg_match('@[A-Z]@', $passwd1);
+    $lowercase = preg_match('@[a-z]@', $passwd1);
+    $number    = preg_match('@[0-9]@', $passwd1);
+
     // check form validity
     if (empty($userName) OR empty($realName)) {
         toastr(__('User Name or Real Name can\'t be empty'))->error();
@@ -132,6 +137,18 @@ if (isset($_POST['saveData'])) {
     } else if (($userName == 'admin' OR $realName == 'Administrator') AND $_SESSION['uid'] != 1) {
         toastr(__('Login username or Real Name is probihited!'))->error();
         exit();
+    } else if (strlen($passwd1) <= 12) {
+        toastr(__('Password length is less than 12. Please correct it!'))->error();
+        exit();
+    } elseif (    
+	    !$uppercase
+        OR  !$lowercase
+        OR  !$number) {
+            toastr(__('Invalid password. A valid password has:<ul>
+            <li>at least one number (0-9)</li>
+            <li>at least one uppercase alphabet (A-Z)</li>
+            <li>at least one lowercase alphabet (a-z)</li></ul>'))->error();
+            exit();
     } else if (($passwd1 AND $passwd2) AND ($passwd1 !== $passwd2)) {
         toastr(__('Password confirmation does not match. See if your Caps Lock key is on!'))->error();
         exit();
