@@ -51,10 +51,21 @@ $_uname = $file_d['realname'];
 if (isset($_POST['updatePassword'])) {
   $passwd = trim($_POST['newPasswd']);
   $passwd2 = trim($_POST['newPasswd2']);
+  $uppercase = preg_match('@[A-Z]@', $passwd);
+  $lowercase = preg_match('@[a-z]@', $passwd);
+  $number    = preg_match('@[0-9]@', $passwd);
+    
   if (empty($passwd)) {
     utility::jsAlert(__('Current password can not be empty!'));
   } else if (($passwd AND $passwd2) AND ($passwd !== $passwd2)) {
     utility::jsAlert(__('Password confirmation does not match. See if your Caps Lock key is on!'));
+  } else if (strlen($passwd) <= 12) {
+    utility::jsAlert(__('Password length is less than 12. Please correct it!'));
+  } else if (    
+            !$uppercase
+        OR  !$lowercase
+        OR  !$number) {
+          utility::jsAlert(__("Password is not valid. A valid password:\n\n- has at least one number (0-9)\n- at least one uppercase letter (A-Z)\n- at least one lowercase letter (a-z)"));
   } else {
     // Confirm about email and salt again
     if ($_q->num_rows > 0) {
