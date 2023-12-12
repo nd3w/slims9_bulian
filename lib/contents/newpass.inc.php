@@ -59,7 +59,7 @@ if (isset($_POST['updatePassword'])) {
     utility::jsAlert(__('Current password can not be empty!'));
   } else if (($passwd AND $passwd2) AND ($passwd !== $passwd2)) {
     utility::jsAlert(__('Password confirmation does not match. See if your Caps Lock key is on!'));
-  } else if (strlen($passwd) <= 12) {
+  } else if (strlen($passwd) < 12) {
     utility::jsAlert(__('Password length is less than 12. Please correct it!'));
   } else if (    
             !$uppercase
